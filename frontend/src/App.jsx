@@ -9,10 +9,12 @@ import { getCurrentUser } from "./services/auth"
 
 const PrivateRoute = ({ children, allowedRoles }) => {
   const user = getCurrentUser()
+  console.log("Current user:", user)
   if (!user.token) {
     return <Navigate to="/login" />
   }
   if (allowedRoles && !allowedRoles.includes(user.role)) {
+    console.log("User role not allowed:", user.role)
     return <Navigate to="/" />
   }
   return children
@@ -50,4 +52,3 @@ function App() {
 }
 
 export default App
-

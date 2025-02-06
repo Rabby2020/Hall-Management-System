@@ -1,4 +1,3 @@
-// backend/routes/meals.js
 const express = require('express');
 const router = express.Router();
 const Meal = require('../models/Meal');
@@ -8,22 +7,21 @@ const auth = require('../middleware/auth');
 // Get meals for a specific hall
 router.get('/:hallId', auth, async (req, res) => {
   try {
+    console.log(`Fetching meals for hallId: ${req.params.hallId}`);
     const meals = await Meal.find({ hallId: req.params.hallId });
+    console.log(`Meals found: ${meals.length}`);
     res.json(meals);
   } catch (err) {
+    console.error(err.message);
     res.status(500).json({ message: err.message });
   }
 });
 
 // Add a new meal (admin only)
 router.post('/', auth, async (req, res) => {
-  // console.log("hit");
   try {
     const hall = await Hall.findById(req.body.hallId);
-    await console.log("hit");
-    // console.log(hall.adminId);
     if (!hall) return res.status(404).json({ message: 'Hall not found' });
-    // if (user.hallId.toString() !== req.user.id) return res.status(403).json({ message: 'Not authorized' });
 
     const meal = new Meal({
       hallId: req.body.hallId,
@@ -35,6 +33,7 @@ router.post('/', auth, async (req, res) => {
     const newMeal = await meal.save();
     res.status(201).json(newMeal);
   } catch (err) {
+    console.error(err.message);
     res.status(400).json({ message: err.message });
   }
 });
@@ -52,6 +51,7 @@ router.post('/:id/order', auth, async (req, res) => {
 
     res.json(meal);
   } catch (err) {
+    console.error(err.message);
     res.status(400).json({ message: err.message });
   }
 });

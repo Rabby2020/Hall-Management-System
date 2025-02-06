@@ -9,7 +9,7 @@ function Register() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [hallId, setHallId] = useState("")
-  const [role, setRole] = useState() // Default role is 'student'
+  const [role, setRole] = useState("student") // Default role is 'student'
   const [halls, setHalls] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -38,15 +38,20 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
+      console.log("Submitting form with role:", role)
       // Send the role along with other user data
       const res = await axios.post("/api/auth/register", { name, email, password, hallId, role })
       localStorage.setItem("token", res.data.token)
       localStorage.setItem("userId", res.data.userId)
-      if(role == "student") 
-        navigate("/user");
-      else {navigate("/admin")
-        console.log("admin role");
-      };
+      localStorage.setItem("role", res.data.role)
+      localStorage.setItem("hallId", res.data.hallId)
+      if (role === "student") {
+        console.log("Redirecting to /user")
+        navigate("/user")
+      } else if (role === "admin") {
+        console.log("Redirecting to /admin")
+        navigate("/admin")
+      }
     } catch (err) {
       console.error(err.response.data)
       setError(err.response.data.msg || "Registration failed. Please try again.")

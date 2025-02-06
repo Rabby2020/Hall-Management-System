@@ -4,11 +4,12 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const User = require("../models/User")
 const Hall = require("../models/Hall")
+const auth = require("../middleware/auth")
 
 // Register
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password, hallId,role } = req.body
+    const { name, email, password, hallId, role } = req.body
 
     // Check if user already exists
     let user = await User.findOne({ email })
@@ -64,7 +65,12 @@ router.post("/register", async (req, res) => {
 
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" }, (err, token) => {
       if (err) throw err
-      res.json({ token, userId: user.id })
+      res.json({
+        token,
+        userId: user.id,
+        role: user.role,
+        hallId: user.hallId,
+      })
     })
   } catch (err) {
     console.error(err.message)
@@ -112,5 +118,15 @@ router.post("/login", async (req, res) => {
   }
 })
 
-module.exports = router
+// Get current user
+router.get("/me", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password")
+    res.json(user)
+  } catch (err) {
+    console.error(err.message)
+    res.status(500).send("Server error")
+  }
+})
 
+module.exports = router
