@@ -24,7 +24,8 @@ app.use("/api/auth", require("./routes/auth"))
 app.use("/api/meals", require("./routes/meals"))
 app.use("/api/halls", require("./routes/halls"))
 app.use("/api/notices", require("./routes/notices"))
-app.use("/api/allowed-admins", require("./routes/allowedAdmins")) // New route for allowed admins
+app.use("/api/allowed-admins", require("./routes/allowedAdmins"))
+app.use("/api/faqs", require("./routes/faqs")) // New route for FAQs
 
 const PORT = process.env.PORT || 5000
 
