@@ -5,20 +5,23 @@ import axios from "axios"
 import { getCurrentUser } from "../services/auth"
 
 function AdminDashboard() {
-  const [meals, setMeals] = useState([])
-  const [newMeal, setNewMeal] = useState({ date: "", type: "", menu: "" })
+  const [newMeal, setNewMeal] = useState({ date: "", type: "", menu: "", price: "" })
+  const [selectedDate, setSelectedDate] = useState("")
+  const [selectedMeals, setSelectedMeals] = useState([])
   const user = getCurrentUser()
 
   useEffect(() => {
-    fetchMeals()
-  }, [])
+    if (selectedDate) {
+      fetchMealsByDate()
+    }
+  }, [selectedDate])
 
-  const fetchMeals = async () => {
+  const fetchMealsByDate = async () => {
     try {
-      const res = await axios.get(`/api/meals/${user.hallId}`, {
+      const res = await axios.get(`/api/meals/${user.hallId}/${selectedDate}`, {
         headers: { "x-auth-token": user.token },
       })
-      setMeals(res.data)
+      setSelectedMeals(res.data)
     } catch (err) {
       console.error(err)
     }
@@ -37,11 +40,11 @@ function AdminDashboard() {
         {
           headers: { "x-auth-token": user.token },
         },
-      );
-      fetchMeals();
-      setNewMeal({ date: "", type: "", menu: "" });
+      )
+      fetchMealsByDate() // Refresh the meals for the selected date
+      setNewMeal({ date: "", type: "", menu: "", price: "" })
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
   }
 
@@ -56,13 +59,21 @@ function AdminDashboard() {
           <option value="dinner">Dinner</option>
         </select>
         <textarea name="menu" placeholder="Menu" value={newMeal.menu} onChange={handleInputChange} required></textarea>
+        <input type="number" name="price" placeholder="Price" value={newMeal.price} onChange={handleInputChange} required />
         <button type="submit">Add Meal</button>
       </form>
-      <h3>Meals</h3>
+      <h3>Check Meals and Orders for a Specific Day</h3>
+      <label>Select Date: </label>
+      <input
+        type="date"
+        value={selectedDate}
+        onChange={(e) => setSelectedDate(e.target.value)}
+      />
       <ul>
-        {meals.map((meal) => (
+        {selectedMeals.map((meal) => (
           <li key={meal._id}>
-            {new Date(meal.date).toLocaleDateString()} - {meal.type}: {meal.menu}
+            {new Date(meal.date).toLocaleDateString()} - {meal.type}: {meal.menu} - ${meal.price}
+            <p>Total Orders: {meal.orders.length}</p>
           </li>
         ))}
       </ul>
@@ -71,4 +82,3 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard
-

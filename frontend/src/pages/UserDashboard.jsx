@@ -1,10 +1,11 @@
-// frontend/src/pages/UserDashboard.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function UserDashboard() {
   const [meals, setMeals] = useState([]);
   const [hallId, setHallId] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedMeals, setSelectedMeals] = useState([]);
 
   useEffect(() => {
     fetchUserHall();
@@ -15,6 +16,12 @@ function UserDashboard() {
       fetchMeals();
     }
   }, [hallId]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      fetchMealsByDate();
+    }
+  }, [selectedDate]);
 
   const fetchUserHall = async () => {
     try {
@@ -38,27 +45,72 @@ function UserDashboard() {
     }
   };
 
-  const orderMeal = async (mealId) => {
+  const fetchMealsByDate = async () => {
     try {
-      await axios.post(`/api/meals/${mealId}/order`, {}, {
+      const res = await axios.get(`/api/meals/${hallId}/${selectedDate}`, {
         headers: { 'x-auth-token': localStorage.getItem('token') }
       });
-      fetchMeals();
+      setSelectedMeals(res.data);
     } catch (err) {
       console.error(err);
     }
   };
 
+  const orderMeal = async (mealId) => {
+    try {
+      await axios.post(`/api/meals/${mealId}/order`, {}, {
+        headers: { 'x-auth-token': localStorage.getItem('token') }
+      });
+      fetchMealsByDate();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const cancelOrder = async (mealId) => {
+    try {
+      await axios.post(`/api/meals/${mealId}/cancel`, {}, {
+        headers: { 'x-auth-token': localStorage.getItem('token') }
+      });
+      fetchMealsByDate();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const isOrderable = (mealDate) => {
+    const today = new Date();
+    const mealDay = new Date(mealDate);
+    const diffTime = mealDay - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 1;
+  };
+
   return (
     <div>
       <h2>User Dashboard</h2>
-      <h3>Upcoming Meals</h3>
+      <h3>Check Meals for a Specific Day</h3>
+      <label>Select Date: </label>
+      <input
+        type="date"
+        value={selectedDate}
+        onChange={(e) => setSelectedDate(e.target.value)}
+      />
       <ul>
-        {meals.map((meal) => (
+        {selectedMeals.map((meal) => (
           <li key={meal._id}>
-            {new Date(meal.date).toLocaleDateString()} - {meal.type}: {meal.menu}
-            <button onClick={() => orderMeal(meal._id)}>
+            {new Date(meal.date).toLocaleDateString()} - {meal.type}: {meal.menu} - ${meal.price}
+            <button
+              onClick={() => orderMeal(meal._id)}
+              disabled={!isOrderable(meal.date) || meal.orders.includes(localStorage.getItem('userId'))}
+            >
               {meal.orders.includes(localStorage.getItem('userId')) ? 'Ordered' : 'Order'}
+            </button>
+            <button
+              onClick={() => cancelOrder(meal._id)}
+              disabled={!isOrderable(meal.date) || !meal.orders.includes(localStorage.getItem('userId'))}
+            >
+              Cancel Order
             </button>
           </li>
         ))}
