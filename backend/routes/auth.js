@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const User = require("../models/User")
 const Hall = require("../models/Hall")
+const AllowedAdmin = require("../models/AllowedAdmin")
 const auth = require("../middleware/auth")
 
 // Register
@@ -40,13 +41,21 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ msg: "Invalid hall" })
     }
 
+    // If registering as admin, check if email is in the allowed admin list
+    if (role === "admin") {
+      const isAllowed = await AllowedAdmin.findOne({ email, hallId: selectedHallId })
+      if (!isAllowed) {
+        return res.status(403).json({ msg: "Not authorized to register as admin for this hall" })
+      }
+    }
+
     // Create new user
     user = new User({
       name,
       email,
       password,
       hallId: selectedHallId,
-      role, // Set default role to student
+      role: role || "student", // Set default role to student if not provided
     })
 
     // Hash password
@@ -130,3 +139,4 @@ router.get("/me", auth, async (req, res) => {
 })
 
 module.exports = router
+

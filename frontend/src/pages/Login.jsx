@@ -16,6 +16,8 @@ function Login() {
       const userData = await login(email, password)
       if (userData.role === "admin") {
         navigate("/admin")
+      } else if (userData.role === "system-admin") {
+        navigate("/super-admin")
       } else {
         navigate("/user")
       }

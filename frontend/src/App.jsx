@@ -5,6 +5,7 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import AdminDashboard from "./pages/AdminDashboard"
 import UserDashboard from "./pages/UserDashboard"
+import SuperAdminDashboard from "./pages/SuperAdminDashboard"
 import { getCurrentUser } from "./services/auth"
 
 const PrivateRoute = ({ children, allowedRoles }) => {
@@ -45,6 +46,14 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/super-admin"
+            element={
+              <PrivateRoute allowedRoles={["system-admin"]}>
+                <SuperAdminDashboard />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </div>
     </Router>
@@ -52,3 +61,4 @@ function App() {
 }
 
 export default App
+
