@@ -108,99 +108,139 @@ function SuperAdminDashboard() {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Super Admin Dashboard</h2>
+    <div className="container-fluid py-4">
+      <h2 className="mb-4">Super Admin Dashboard</h2>
 
-      <div className="mb-8">
-        <h3 className="text-xl font-bold mb-2">Add Allowed Admin</h3>
-        <form onSubmit={handleSubmit} className="space-y-2">
-          <input
-            type="email"
-            name="email"
-            placeholder="Admin Email"
-            value={newAllowedAdmin.email}
-            onChange={handleInputChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-          <select
-            name="hallId"
-            value={newAllowedAdmin.hallId}
-            onChange={handleInputChange}
-            required
-            className="w-full p-2 border rounded"
-          >
-            <option value="">Select Hall</option>
-            {halls.map((hall) => (
-              <option key={hall._id} value={hall._id}>
-                {hall.name}
-              </option>
-            ))}
-          </select>
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-            Add Allowed Admin
-          </button>
-        </form>
+      <div className="row">
+        <div className="col-md-6 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <h3 className="card-title">Add Allowed Admin</h3>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Admin Email"
+                    value={newAllowedAdmin.email}
+                    onChange={handleInputChange}
+                    required
+                    className="form-control"
+                  />
+                </div>
+                <div className="mb-3">
+                  <select
+                    name="hallId"
+                    value={newAllowedAdmin.hallId}
+                    onChange={handleInputChange}
+                    required
+                    className="form-select"
+                  >
+                    <option value="">Select Hall</option>
+                    {halls.map((hall) => (
+                      <option key={hall._id} value={hall._id}>
+                        {hall.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button type="submit" className="btn btn-primary">
+                  Add Allowed Admin
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-6 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <h3 className="card-title">Allowed Admins</h3>
+              <ul className="list-group">
+                {allowedAdmins.map((admin) => (
+                  <li key={admin._id} className="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                      {admin.email} - {admin.hallId.name}
+                    </span>
+                    <button onClick={() => handleRemoveAllowedAdmin(admin._id)} className="btn btn-danger btn-sm">
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="mb-8">
-        <h3 className="text-xl font-bold mb-2">Allowed Admins</h3>
-        <ul className="space-y-2">
-          {allowedAdmins.map((admin) => (
-            <li key={admin._id} className="flex justify-between items-center bg-gray-100 p-2 rounded">
-              <span>
-                {admin.email} - {admin.hallId.name}
-              </span>
-              <button
-                onClick={() => handleRemoveAllowedAdmin(admin._id)}
-                className="bg-red-500 text-white px-2 py-1 rounded"
-              >
-                Remove
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <div className="row">
+        <div className="col-md-6 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <h3 className="card-title">Add FAQ</h3>
+              <form onSubmit={handleFaqSubmit}>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="question"
+                    placeholder="Question"
+                    value={newFaq.question}
+                    onChange={handleFaqInputChange}
+                    required
+                    className="form-control"
+                  />
+                </div>
+                <div className="mb-3">
+                  <textarea
+                    name="answer"
+                    placeholder="Answer"
+                    value={newFaq.answer}
+                    onChange={handleFaqInputChange}
+                    required
+                    className="form-control"
+                  ></textarea>
+                </div>
+                <button type="submit" className="btn btn-primary">
+                  Add FAQ
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
 
-      <div className="mb-8">
-        <h3 className="text-xl font-bold mb-2">Add FAQ</h3>
-        <form onSubmit={handleFaqSubmit} className="space-y-2">
-          <input
-            type="text"
-            name="question"
-            placeholder="Question"
-            value={newFaq.question}
-            onChange={handleFaqInputChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-          <textarea
-            name="answer"
-            placeholder="Answer"
-            value={newFaq.answer}
-            onChange={handleFaqInputChange}
-            required
-            className="w-full p-2 border rounded"
-          ></textarea>
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-            Add FAQ
-          </button>
-        </form>
-      </div>
-
-      <div>
-        <h3 className="text-xl font-bold mb-2">FAQs</h3>
-        <ul className="space-y-4">
-          {faqs.map((faq) => (
-            <li key={faq._id} className="bg-gray-100 p-4 rounded">
-              <h4 className="font-bold">{faq.question}</h4>
-              <p>{faq.answer}</p>
-              <button onClick={() => handleRemoveFaq(faq._id)} className="bg-red-500 text-white px-2 py-1 rounded mt-2">
-                Remove
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="col-md-6 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <h3 className="card-title">FAQs</h3>
+              <div className="accordion" id="faqAccordion">
+                {faqs.map((faq, index) => (
+                  <div className="accordion-item" key={faq._id}>
+                    <h4 className="accordion-header">
+                      <button
+                        className="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target={`#collapse${index}`}
+                        aria-expanded="false"
+                        aria-controls={`collapse${index}`}
+                      >
+                        {faq.question}
+                      </button>
+                    </h4>
+                    <div id={`collapse${index}`} className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                      <div className="accordion-body">
+                        <p>{faq.answer}</p>
+                        <button onClick={() => handleRemoveFaq(faq._id)} className="btn btn-danger btn-sm">
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

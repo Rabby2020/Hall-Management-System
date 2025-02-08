@@ -117,45 +117,71 @@ function UserDashboard() {
   }
 
   return (
-    <div>
-      <h2>User Dashboard</h2>
-      <h3>Check Meals for a Specific Day</h3>
-      <label>Select Date: </label>
-      <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
-      <ul>
-        {selectedMeals.map((meal) => (
-          <li key={meal._id}>
-            {new Date(meal.date).toLocaleDateString()} - {meal.type}: {meal.menu} - ${meal.price}
-            <button
-              onClick={() => orderMeal(meal._id)}
-              disabled={!isOrderable(meal.date) || meal.orders.includes(localStorage.getItem("userId"))}
-            >
-              {meal.orders.includes(localStorage.getItem("userId")) ? "Ordered" : "Order"}
-            </button>
-            <button
-              onClick={() => cancelOrder(meal._id)}
-              disabled={!isOrderable(meal.date) || !meal.orders.includes(localStorage.getItem("userId"))}
-            >
-              Cancel Order
-            </button>
-          </li>
-        ))}
-      </ul>
-      <div>
-        <button onClick={handleSeeNotices}>{showNotices ? "Hide Notices" : "See Notices"}</button>
+    <div className="container mt-4" style={{ minHeight: "100vh" }}>
+      <h2 className="mb-4 text-center">User Dashboard</h2>
+
+      <div className="mb-4">
+        <h3>Check Meals for a Specific Day</h3>
+        <label>Select Date: </label>
+        <input
+          type="date"
+          className="form-control w-auto d-inline"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
+      </div>
+
+      <div className="mb-4">
+        <h4>Available Meals</h4>
+        {selectedMeals.length > 0 ? (
+          <div className="list-group">
+            {selectedMeals.map((meal) => (
+              <div key={meal._id} className="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <h5>{new Date(meal.date).toLocaleDateString()} - {meal.type}</h5>
+                  <p>{meal.menu} - ${meal.price}</p>
+                </div>
+                <div>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => orderMeal(meal._id)}
+                    disabled={!isOrderable(meal.date) || meal.orders.includes(localStorage.getItem("userId"))}
+                  >
+                    {meal.orders.includes(localStorage.getItem("userId")) ? "Ordered" : "Order"}
+                  </button>
+                  <button
+                    className="btn btn-danger ml-2"
+                    onClick={() => cancelOrder(meal._id)}
+                    disabled={!isOrderable(meal.date) || !meal.orders.includes(localStorage.getItem("userId"))}
+                  >
+                    Cancel Order
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No meals available for the selected date.</p>
+        )}
+      </div>
+
+      <div className="mb-4">
+        <button className="btn btn-info" onClick={handleSeeNotices}>
+          {showNotices ? "Hide Notices" : "See Notices"}
+        </button>
         {showNotices && (
-          <div>
-            <h3>Recent Notices for Your Hall</h3>
+          <div className="mt-3">
+            <h4>Recent Notices for Your Hall</h4>
             {notices.length > 0 ? (
-              <ul>
+              <div className="list-group">
                 {notices.map((notice) => (
-                  <li key={notice._id}>
-                    <h4>{notice.title}</h4>
+                  <div key={notice._id} className="list-group-item">
+                    <h5>{notice.title}</h5>
                     <p>{notice.content}</p>
                     <small>{new Date(notice.date).toLocaleString()}</small>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             ) : (
               <p>No notices at the moment.</p>
             )}
@@ -167,4 +193,3 @@ function UserDashboard() {
 }
 
 export default UserDashboard
-

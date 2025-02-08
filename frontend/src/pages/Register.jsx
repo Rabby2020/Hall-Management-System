@@ -63,7 +63,7 @@ function Register() {
   }
 
   if (error) {
-    return <div>{error}</div>
+    return <div className="alert alert-danger">{error}</div>
   }
 
   if (halls.length === 0) {
@@ -71,34 +71,85 @@ function Register() {
   }
 
   return (
-    <div>
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <select value={hallId} onChange={(e) => setHallId(e.target.value)} required>
-          {halls.map((hall) => (
-            <option key={hall._id} value={hall._id}>
-              {hall.name}
-            </option>
-          ))}
-        </select>
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <h2 className="text-center mb-4">Register</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="name" className="form-label">Name</label>
+              <input
+                type="text"
+                className="form-control"
+                id="name"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
 
-        <label>Role</label>
-        <select value={role} onChange={(e) => setRole(e.target.value)} required>
-          <option value="student">Student</option>
-          <option value="admin">Admin</option>
-        </select>
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label">Email</label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-        <button type="submit">Register</button>
-      </form>
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                id="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="hall" className="form-label">Hall</label>
+              <select
+                className="form-select"
+                id="hall"
+                value={hallId}
+                onChange={(e) => setHallId(e.target.value)}
+                required
+              >
+                {halls.map((hall) => (
+                  <option key={hall._id} value={hall._id}>
+                    {hall.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="role" className="form-label">Role</label>
+              <select
+                className="form-select"
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                required
+              >
+                <option value="student">Student</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <button type="submit" className="btn btn-primary w-100">Register</button>
+          </form>
+        </div>
+      </div>
     </div>
   )
 }

@@ -30,28 +30,32 @@ function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="container-fluid p-0">
       {/* Hero Section */}
-      <div className="relative h-96">
-        <img src="/images/university.jpg" alt="University" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <h1 className="text-white text-4xl font-bold">Welcome to Hall Management System</h1>
+      <div className="position-relative" style={{ height: "600px" }}>
+        <img src="/images/university.jpg" alt="University" className="w-100 h-100 object-fit-cover" />
+        <div
+          className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
+          {/* <h1 className="text-white display-4 fw-bold">Welcome to Hall Management System</h1> */}
         </div>
       </div>
 
       {/* Animated Hall Photos Section */}
-      <div className="py-16 bg-white">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">Our Halls</h2>
-          <div className="relative h-96">
+      <div className="py-5 bg-light">
+        <div className="container">
+          <h2 className="text-center mb-4">Our Halls</h2>
+          <div className="position-relative" style={{ height: "400px" }}>
             {hallPhotos.map((photo, index) => (
               <img
                 key={index}
                 src={photo || "/placeholder.svg"}
                 alt={`Hall ${index + 1}`}
-                className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                className={`position-absolute top-0 start-0 w-100 h-100 object-fit-cover ${
                   index === currentHallIndex ? "opacity-100" : "opacity-0"
                 }`}
+                style={{ transition: "opacity 1s" }}
               />
             ))}
           </div>
@@ -59,14 +63,27 @@ function Home() {
       </div>
 
       {/* FAQ Section */}
-      <div className="py-16 bg-gray-100">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-          <div className="space-y-4">
-            {faqs.map((faq) => (
-              <div key={faq._id} className="bg-white p-4 rounded-lg shadow">
-                <h3 className="font-bold text-lg mb-2">{faq.question}</h3>
-                <p>{faq.answer}</p>
+      <div className="py-5">
+        <div className="container">
+          <h2 className="text-center mb-4">Frequently Asked Questions</h2>
+          <div className="accordion" id="faqAccordion">
+            {faqs.map((faq, index) => (
+              <div className="accordion-item" key={faq._id}>
+                <h3 className="accordion-header">
+                  <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target={`#collapse${index}`}
+                    aria-expanded="false"
+                    aria-controls={`collapse${index}`}
+                  >
+                    {faq.question}
+                  </button>
+                </h3>
+                <div id={`collapse${index}`} className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div className="accordion-body">{faq.answer}</div>
+                </div>
               </div>
             ))}
           </div>

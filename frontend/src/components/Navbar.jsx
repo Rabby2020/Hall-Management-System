@@ -12,59 +12,72 @@ function Navbar() {
   }
 
   return (
-    <nav className="bg-blue-600 p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-white text-2xl font-bold">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div className="container">
+        <Link to="/" className="navbar-brand">
           Hall Management System
         </Link>
-        <ul className="flex space-x-4">
-          <li>
-            <Link to="/" className="text-white hover:text-blue-200">
-              Home
-            </Link>
-          </li>
-          {!user.token ? (
-            <>
-              <li>
-                <Link to="/login" className="text-white hover:text-blue-200">
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link to="/register" className="text-white hover:text-blue-200">
-                  Register
-                </Link>
-              </li>
-            </>
-          ) : (
-            <>
-              {user.role === "admin" && (
-                <li>
-                  <Link to="/admin" className="text-white hover:text-blue-200">
-                    Admin Dashboard
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <Link to="/" className="nav-link">
+                Home
+              </Link>
+            </li>
+            {!user.token ? (
+              <>
+                <li className="nav-item">
+                  <Link to="/login" className="nav-link">
+                    Login
                   </Link>
                 </li>
-              )}
-              {user.role === "system-admin" && (
-                <li>
-                  <Link to="/super-admin" className="text-white hover:text-blue-200">
-                    Super Admin Dashboard
+                <li className="nav-item">
+                  <Link to="/register" className="nav-link">
+                    Register
                   </Link>
                 </li>
-              )}
-              <li>
-                <Link to="/user" className="text-white hover:text-blue-200">
-                  User Dashboard
-                </Link>
-              </li>
-              <li>
-                <button onClick={handleLogout} className="text-white hover:text-blue-200">
-                  Logout
-                </button>
-              </li>
-            </>
-          )}
-        </ul>
+              </>
+            ) : (
+              <>
+                {user.role === "admin" && (
+                  <li className="nav-item">
+                    <Link to="/admin" className="nav-link">
+                      Admin Dashboard
+                    </Link>
+                  </li>
+                )}
+                {user.role === "system-admin" && (
+                  <li className="nav-item">
+                    <Link to="/super-admin" className="nav-link">
+                      Super Admin Dashboard
+                    </Link>
+                  </li>
+                )}
+                <li className="nav-item">
+                  <Link to="/user" className="nav-link">
+                    User Dashboard
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <button onClick={handleLogout} className="nav-link btn btn-link">
+                    Logout
+                  </button>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
       </div>
     </nav>
   )
